@@ -30,3 +30,4 @@ spacy==3.8.4
 language_tool_python==2.9.0
 geonamescache==2.0.0
 pycountry==24.6.1
+sqlalchemy==2.0.38
