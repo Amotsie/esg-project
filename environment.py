@@ -3,9 +3,28 @@ import spacy
 import re
 import pandas as pd
 from clean_kip import extract_dynamic_associations
+import os
 # from grammar import check_and_correct_grammar 
 # from country_names import extract_details_from_txt  
 # from dbqueries import (insert_company,fetch_all_companies,insert_indicator,insert_kpi,insert_year)
+
+# Download the model within your application's code during startup
+model_name = "en_core_web_sm"
+try:
+    # Check if the model is already downloaded
+    nlp = spacy.load(model_name)
+except OSError:
+    print(f"Downloading {model_name}...")
+    try:
+        spacy.cli.download(model_name)
+        nlp = spacy.load(model_name)
+    except Exception as e:
+        print(f"Error downloading model: {e}")
+        exit(1)  # Exit with an error code
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+    exit(1)
+
 def create_directory_if_needed(directory_path):
     """Ensure the given directory exists; if not, create it."""
     if not os.path.exists(directory_path):
