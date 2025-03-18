@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<div class="table-container">
+
+    <table class="table">
+        <thead>
+            <tr class="table-dark">
+                <th>Company</th>
+                <th>Sector</th>
+                <th>Region</th>
+                <th>Country</th>
+                <th>Indicator</th>
+                <th>KPI</th>
+                <th>KIP value</th>
+                <th>Unit</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in companies %}
+            {% for indicator in company.indicators %}
+            <tr>
+                <td>{{ company.company_name }}</td>
+                <td>{{ company.sector if company.sector else "N/A" }}</td>
+                <td>{{ company.region }}</td>
+                <td>{{ company.country }}</td>
+                <td>{{ indicator.indicator }}</td>
+                <td>{{ indicator.KPI }}</td>
+                <td>{{ indicator.KPI_value if indicator.KPI_value else "N/A" }}</td>
+                <td>{{ indicator.unit if indicator.unit else "N/A" }}</td>
+                <td>{{ indicator.year }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

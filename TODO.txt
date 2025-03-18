@@ -1,0 +1,12 @@
+DB querries:
+    > wite queries for fetching individual esg data. 
+
+APP:
+    > Add enpoints for each esg category
+
+
+Related: 
+    > Deploy APP
+    > Modify R to fetch using API
+    > Deploy R
+    > Check admin interface.

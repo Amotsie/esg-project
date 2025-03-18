@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ESG{% endblock %}</title>
+  <link rel="stylesheet" href="static/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="/">ESG Admin Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="row">
+    <div class="flexing">
+      <!-- Sidebar Container -->
+      <div class=" col col-md-3 side_container p-3">
+        <div class=" block">
+          <!-- File Upload Form -->
+          <div class="row mb-4">
+            <form action="/upload" method="POST" enctype="multipart/form-data">
+              <label for="formFileLg" class="form-label">Upload Folder containing PDF files</label>
+              <input type="file" class="form-control" name="files" id="file-input" multiple required webkitdirectory />
+              <button type="submit" class="btn btn-success mt-3">Submit</button>
+            </form>
+          </div>
+          <hr>
+          <!-- Filter Dropdown -->
+          <div class="row">
+            <label for="filterSelect" class="form-label filter_by">Filter Data by</label>
+
+            <select id="filterSelect" class="form-select mt-2">
+              <option selected>Open this select menu</option>
+              <option value="1">Country</option>
+              <option value="2">Year</option>
+              <option value="3">Sector</option>
+              <option value="3">Region</option>
+            </select>
+            <div class="filter_option">option</div>
+            <input type="text" class="form-control mt-2" aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-default" placeholder="country | sector | Region ..."></input>
+
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class=" col col-md-8 main_content p-3">
+
+        {% block content %}
+        <!-- Page content goes here -->
+        {% endblock %}
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <footer class="text-center mt-5 py-3 bg-light">
+    <p>&copy; 2025 ESG DATA </p>
+  </footer>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQp3TkaoA8iKa5a2eBz9ePVFe1iwXpr5PpMl7x9f6c5F6cJ73Y"
+    crossorigin="anonymous"></script>
+
+  <script>
+    const form = document.getElementById("upload-form");
+    const errorContainer = document.getElementById("error-container");
+    const progressContainer = document.getElementById("progress-container");
+    const progressBar = document.getElementById("progress-bar");
+
+    form.onsubmit = async (event) => {
+      event.preventDefault();
+      errorContainer.innerHTML = "";
+      progressContainer.style.display = "block";
+
+      const fileInput = document.getElementById("file-input");
+      const files = fileInput.files;
+
+      if (files.length === 0) {
+        errorContainer.innerHTML = `<div class="alert alert-danger">No files selected.</div>`;
+        progressContainer.style.display = "none";
+        return;
+      }
+
+      // Prepare file data for upload
+      const filePromises = Array.from(files).map((file) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (reader.result) {
+              const base64Data = reader.result.split(",")[1];
+              resolve({ name: file.name, type: file.type, data: base64Data });
+            } else {
+              resolve({ name: file.name, type: file.type, data: null });
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+
+      try {
+        const fileDataArray = await Promise.all(filePromises);
+        const jsonData = JSON.stringify({
+          files: fileDataArray.filter((file) => file.data),
+        });
+
+        // Track total upload progress
+        let totalUploaded = 0;
+        const totalSize = Array.from(files).reduce(
+          (sum, file) => sum + file.size,
+          0
+        );
+
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: jsonData,
+        });
+
+        const reader = response.body.getReader();
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          // Increment progress and update progress bar
+          totalUploaded += value.length;
+          const percentage = Math.round((totalUploaded / totalSize) * 100);
+
+          progressBar.setAttribute("aria-valuenow", percentage);
+          progressBar.textContent = `${percentage}%`;
+        }
+
+        if (response.ok) {
+          progressBar.classList.add("text-success");
+          progressBar.textContent = "Upload Complete!";
+        } else {
+          errorContainer.innerHTML = `<div class="alert alert-danger">Upload failed.</div>`;
+          progressBar.classList.add("bg-danger");
+        }
+      } catch (error) {
+        errorContainer.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        progressBar.classList.add("bg-danger");
+      }
+    };
+
+    function downloadFolder() {
+      window.location.href = "/download-uploads";
+    }
+  </script>
+</body>
+
+</html>

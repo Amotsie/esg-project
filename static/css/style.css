@@ -1,0 +1,60 @@
+.flexing {
+    display: flex;
+    padding: 0;
+
+}
+
+.side_container {
+    background-color: rgb(185, 143, 4);
+    width: 300px;
+    /* Adjust width as needed */
+    height: 100vh;
+    /* Full height */
+    padding: 20px;
+    color: white;
+    left: 0;
+    margin-left: 0;
+
+}
+
+.block {
+    border: 1px solid rgb(211, 211, 211);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.main_content {
+    flex-grow: 1;
+    /* Takes remaining space */
+    background-color: white;
+}
+
+.filter_by {
+    text-decoration: underline;
+}
+
+.filter_option {
+    padding-top: 2px;
+    font-style: italic;
+    font-size: 10px;
+    color: rgb(224, 224, 224);
+}
+
+.table-container {
+    width: 114%;
+    max-height: 600px;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
