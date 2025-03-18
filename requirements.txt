@@ -32,4 +32,4 @@ geonamescache==2.0.0
 pycountry==24.6.1
 sqlalchemy==2.0.38
 fitz==0.0.1dev2
-PyMuPDF==1.18.15 
+PyMuPDF==1.21.1
