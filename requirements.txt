@@ -31,3 +31,4 @@ language_tool_python==2.9.0
 geonamescache==2.0.0
 pycountry==24.6.1
 sqlalchemy==2.0.38
+fitz==0.0.1dev2
